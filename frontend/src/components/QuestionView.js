@@ -11,7 +11,7 @@ class QuestionView extends Component {
       questions: [],
       page: 1,
       totalQuestions: 0,
-      categories: {},
+      categories: [],
       currentCategory: null,
     };
   }
@@ -25,6 +25,7 @@ class QuestionView extends Component {
       url: `/questions?page=${this.state.page}`, //TODO: update request URL
       type: 'GET',
       success: (result) => {
+        
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
@@ -138,18 +139,18 @@ class QuestionView extends Component {
             Categories
           </h2>
           <ul>
-            {Object.keys(this.state.categories).map((id) => (
+            {this.state.categories.map((c) => (
               <li
-                key={id}
+                key={c.id}
                 onClick={() => {
-                  this.getByCategory(id);
+                  this.getByCategory(c.id);
                 }}
               >
-                {this.state.categories[id]}
+                {c.type}
                 <img
                   className='category'
-                  alt={`${this.state.categories[id].toLowerCase()}`}
-                  src={`${this.state.categories[id].toLowerCase()}.svg`}
+                  alt={`${c.type.toLowerCase()}`}
+                  src={`${c.type.toLowerCase()}.svg`}
                 />
               </li>
             ))}
@@ -163,7 +164,7 @@ class QuestionView extends Component {
               key={q.id}
               question={q.question}
               answer={q.answer}
-              category={this.state.categories[q.category]}
+              category={this.state.categories.find(x => x.id === q.category).type}
               difficulty={q.difficulty}
               questionAction={this.questionAction(q.id)}
             />
