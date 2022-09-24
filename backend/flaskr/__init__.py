@@ -115,11 +115,12 @@ def create_app(test_config=None):
 
     @app.route("/questions/<int:question_id>", methods=["DELETE"])
     def delete_question(question_id):
-        try:
-            question = Question.query.filter(Question.id == question_id).one_or_none()
+        question = Question.query.filter(Question.id == question_id).one_or_none()
 
-            if question is None:
-                abort(404)
+        if question is None:
+            abort(404)
+
+        try:
 
             question.delete()
             selection = Question.query.order_by(Question.id).all()
@@ -244,10 +245,12 @@ def create_app(test_config=None):
     @app.route("/categories/<int:categorie_id>/questions")
     def categories_questions(categorie_id):
 
+        categorie = Category.query.filter(Category.id == categorie_id).one_or_none()
+        if categorie is None:
+            abort(404)
+
         try:
-            categorie = Category.query.filter(Category.id == categorie_id).one_or_none()
-            if categorie is None:
-                abort(404)
+            
             questions = Question.query.filter(Question.category ==  str(categorie.id))
             current_questions = paginate_questions(request, questions)
             categorie_format = categorie.format()
